@@ -1,0 +1,8 @@
+@(modelName: String, fields: Seq[String])
+<html>
+  <body>
+    @modelName<br/>
+    @fields.map { f =><div>@f</div>
+    }
+  </body>
+</html>

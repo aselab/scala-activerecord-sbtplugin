@@ -1,0 +1,3 @@
+> test
+> generate
+> generate model User name:string age:int
