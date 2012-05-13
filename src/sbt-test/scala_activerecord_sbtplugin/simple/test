@@ -1,3 +1,5 @@
 > test
 > generate
-> generate model User name:string age:int
+$ absent src/main/scala/main/models/User.scala
+> generate model user name:string age:int
+$ exists src/main/scala/main/models/User.scala
