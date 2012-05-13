@@ -1,1 +1,1 @@
-sbtPluginSettings
+activerecordSettings

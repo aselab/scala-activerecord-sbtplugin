@@ -6,7 +6,7 @@ import Project._
 import IO._
 
 object Plugin extends sbt.Plugin {
-  val sbtPluginSettings: Seq[sbt.Project.Setting[_]] = Seq(
+  val activerecordSettings: Seq[sbt.Project.Setting[_]] = Seq(
     PluginKeys.generate <<= Task.generate
   )
 }
