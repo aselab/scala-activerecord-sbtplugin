@@ -1,4 +1,0 @@
-@(modelName: String, fields: Seq[String])
-case class @{modelName} {
-  @fields.mkString(",\r\n  ")
-}
