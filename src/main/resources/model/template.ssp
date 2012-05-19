@@ -1,1 +1,17 @@
-test
+<%@ val packageName: String %>
+<%@ val modelName: String %>
+<%@ val fields: Seq[com.github.aselab.activerecord.ModelInfo] %>
+package ${packageName}
+
+import com.github.aselab.activerecord._
+
+/**
+ * ${modelName} model.
+ *
+ * ${fields.map(_.param).mkString("\r\n * ")}
+ */
+case class ${modelName} (
+  ${fields.mkString(",\r\n  ")}
+) extends ActiveRecord
+
+object ${modelName} extends ActiveRecordCompanion[${modelName}]

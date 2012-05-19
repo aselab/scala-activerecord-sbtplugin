@@ -8,7 +8,6 @@ class ScalateTemplateEngine(libraryJar: File, baseTemplateDir: File) {
   lazy val engine = {
     val engine = new TemplateEngine
     engine.combinedClassPath = true
-    println(libraryJar.getAbsolutePath)
     engine.classpath = libraryJar.getAbsolutePath
     engine
   }

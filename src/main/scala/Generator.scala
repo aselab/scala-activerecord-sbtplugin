@@ -21,18 +21,23 @@ trait Generator {
 
 class ModelGenerator(implicit val info: GenerateInfo) extends Generator {
   lazy val dir = sourceDir / "main" / "models"
-  lazy val fileName = name.capitalize + ".scala"
-  lazy val modelFile = dir / fileName
+  lazy val modelName = name.capitalize
+  lazy val target = dir / (modelName + ".scala")
 
   def generate {
-    val contents = engine.render("model/template.ssp", Map())
+    val contents = engine.render("model/template.ssp", Map(
+      ("packageName", "models"),
+      ("modelName", modelName),
+      ("fields", ModelInfo(fields))
+    ))
+
     if (!dir.exists)
       IO.createDirectory(dir)
-    if (!modelFile.exists) {
-      IO.write(modelFile, contents)
-      println("created: " + modelFile)
+    if (!target.exists) {
+      IO.write(target, contents)
+      println("created: " + target)
     } else {
-      println("exists: " + modelFile)
+      println("exists: " + target)
     }
   }
 }
