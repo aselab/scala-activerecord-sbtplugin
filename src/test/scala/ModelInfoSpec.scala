@@ -53,6 +53,10 @@ object ModelInfoSpec extends Specification {
         ModelInfo.getType("long") mustEqual ("Long", Nil)
       }
 
+      "boolean" in {
+        ModelInfo.getType("boolean") mustEqual ("Boolean", Nil)
+      }
+
       "text" in {
         ModelInfo.getType("text") mustEqual ("String", Nil)
       }

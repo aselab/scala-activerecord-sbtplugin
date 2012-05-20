@@ -7,10 +7,26 @@ import Project._
 object Task {
   import PluginKeys._
 
+  implicit def enumToIterator[A](e : java.util.Enumeration[A]) = new Iterator[A] {
+    def next = e.nextElement
+    def hasNext = e.hasMoreElements
+  }
+
   val copyTemplates: Initialize[sbt.InputTask[Unit]] = inputTask {
     (_, baseDirectory, PluginKeys.templateDirectory) map { case (args, b, t) =>
-      // TODO: Implementation here
-      throw new UnsupportedOperationException
+      getClass.getResource("/templates").openConnection match {
+        case connection: java.net.JarURLConnection =>
+          val entryName = connection.getEntryName
+          val jarFile = connection.getJarFile
+          val entries = jarFile.entries.filter(_.getName.startsWith(entryName))
+          entries.foreach { e =>
+            val fileName = e.getName.drop(entryName.size)
+            if (!e.isDirectory)
+              IO.transfer(jarFile.getInputStream(e), file(t) / fileName)
+            else
+              IO.createDirectory(file(t) / fileName)
+          }
+      }
     }
   }
 

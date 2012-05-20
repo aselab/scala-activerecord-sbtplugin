@@ -5,3 +5,6 @@ $ absent src/main/scala/main/models/Person.scala
 $ exists src/main/scala/main/models/Person.scala
 > generate model days start:date:option:required end:date:option
 $ exists src/main/scala/main/models/Days.scala
+> copy-templates
+$ exists project/templates/model
+$ exists project/templates/model/template.ssp

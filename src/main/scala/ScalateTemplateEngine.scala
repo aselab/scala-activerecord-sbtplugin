@@ -18,7 +18,7 @@ class ScalateTemplateEngine(libraryJar: File, baseTemplateDir: File) {
       if (file.exists)
         TemplateSource.fromFile(file, file.getName)
       else
-        TemplateSource.fromURL(getClass.getResource("/" + targetFile))
+        TemplateSource.fromURL(getClass.getResource("/templates/" + targetFile))
     engine.layout(source, attributes)
   }
 }
