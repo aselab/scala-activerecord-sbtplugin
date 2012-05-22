@@ -16,27 +16,17 @@ object Task {
     }
   }
 
-  val generate: Initialize[sbt.InputTask[Unit]] = inputTask {
-    (_, scalaSource in Compile, state, baseDirectory, templateDirectory) map {
-      case (args, sourceDir, s, b, t) =>
-        args.toList match {
-          case List(generateType, name, fields @ _*) =>
-            val libraryJar = s.configuration.provider.scalaProvider.libraryJar
-            val baseTemplateDir = IOUtil.baseTemplateDir(b, t)
-            val templateEngine =
-              new ScalateTemplateEngine(libraryJar, baseTemplateDir)
-            implicit val info =
-              GenerateInfo(templateEngine, sourceDir, name, fields)
+  Generator.register("model", new ModelGenerator, Parser.modelParser)
+  Generator.register("scaffold", new ScaffoldGenerator, Parser.scaffoldParser)
 
-            val generator = generateType match {
-              case "model" => new ModelGenerator
-              case "scaffold" => new ScaffoldGenerator
-              case _ => throw new Exception("error")
-            }
-            generator.generate
-          case _ =>
-            println("Usage: generate [Generator] [Name] [field[:type] field[:type]]")
-        }
+  val generate: Initialize[sbt.InputTask[Unit]] = InputTask(_ => Generator.allParser) {
+    (_, scalaSource in Compile, state, baseDirectory, templateDirectory) map {
+      case ((generateType: String, parsed), sourceDir, s, b, t) =>
+        val libraryJar = s.configuration.provider.scalaProvider.libraryJar
+        val baseTemplateDir = IOUtil.baseTemplateDir(b, t)
+        val templateEngine = new ScalateTemplateEngine(libraryJar, baseTemplateDir)
+        val info = GenerateInfo(templateEngine, sourceDir, parsed)
+        Generator.generators(generateType).generate(info)
     }
   }
 }
