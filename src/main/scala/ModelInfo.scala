@@ -33,12 +33,15 @@ object ModelInfo {
   }
 
   val basicTypes = List("string", "int", "double", "boolean", "long")
+  val allTypes = basicTypes ++ List("date", "text")
 
   def getType(typeName: String) = typeName.trim.toLowerCase match {
     case s if basicTypes.exists(_ == s) => (s.capitalize -> Nil)
     case "date" => ("Date" -> Seq("java.util.Date"))
     case "text" => ("String" -> Nil)
   }
+
+  val allOptions = List("option", "required", "email", "range")
 
   def getOption(options: Seq[String]) = {
     val opts = options.map(_.trim.toLowerCase)
