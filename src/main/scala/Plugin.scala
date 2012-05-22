@@ -9,10 +9,7 @@ object Plugin extends sbt.Plugin {
   val activerecordSettings: Seq[sbt.Project.Setting[_]] = Seq(
     generate <<= Task.generate,
     copyTemplates <<= Task.copyTemplates,
-    templateDirectory := "project/templates",
-    libraryDependencies ++= Seq(
-      "org.slf4j" % "slf4j-nop" % "1.6.4"
-    )
+    templateDirectory := "project/templates"
   )
 }
 
