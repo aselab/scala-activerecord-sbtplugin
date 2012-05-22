@@ -20,8 +20,9 @@ object Task {
   Generator.register("scaffold", new ScaffoldGenerator, Parser.scaffoldParser)
 
   val generate: Initialize[sbt.InputTask[Unit]] = InputTask(_ => Generator.allParser) {
-    (_, scalaSource in Compile, state, baseDirectory, templateDirectory) map {
-      case ((generateType: String, parsed), sourceDir, s, b, t) =>
+    (_, scalaSource in Compile, streams, state, baseDirectory, templateDirectory) map {
+      case ((generateType: String, parsed), sourceDir, streams, s, b, t) =>
+        implicit val logger = streams.log
         val libraryJar = s.configuration.provider.scalaProvider.libraryJar
         val baseTemplateDir = IOUtil.baseTemplateDir(b, t)
         val templateEngine = new ScalateTemplateEngine(libraryJar, baseTemplateDir)

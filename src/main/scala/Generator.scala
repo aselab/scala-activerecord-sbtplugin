@@ -7,7 +7,7 @@ case class GenerateInfo(
   engine: ScalateTemplateEngine,
   sourceDir: File,
   parsed: Any
-)
+)(implicit val logger: Logger)
 
 trait Generator {
   def generate(info: GenerateInfo): Unit
@@ -33,11 +33,11 @@ class ModelGenerator extends Generator {
 
   def generate(info: GenerateInfo) {
     import info._
-    lazy val dir = sourceDir / "main" / "models"
     val (modelName, fields) = parsed match {
-      case (name: String, fields: Seq[_]) => (name.capitalize, fields.map(_.toString))
+      case (name: String, fields: Seq[_]) =>
+        (name.capitalize, fields.map(_.toString))
     }
-    lazy val target = dir / (modelName + ".scala")
+    val target = sourceDir / "main" / "models" / (modelName + ".scala")
 
     val contents = engine.render("model/template.ssp", Map(
       ("packageName", "models"),
@@ -45,14 +45,7 @@ class ModelGenerator extends Generator {
       ("fields", ModelInfo(fields))
     ))
 
-    if (!dir.exists)
-      IO.createDirectory(dir)
-    if (!target.exists) {
-      IO.write(target, contents)
-      println("created: " + target)
-    } else {
-      println("exists: " + target)
-    }
+    IOUtil.save(target, contents)
   }
 
   val help = "[ModelName] [field[:type] field[:type]]"

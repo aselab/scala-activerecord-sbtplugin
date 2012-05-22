@@ -48,5 +48,22 @@ object IOUtil {
     }
     if (file.exists) askUser else true
   }
+
+  def save(target: File, contents: String)(implicit logger: Logger): Boolean = {
+    if (target.isDirectory) return false
+    val dir = target.getParentFile
+    if (!dir.exists) {
+      IO.createDirectory(dir)
+      logger.success("created: " + dir)
+      true
+    }
+    val message = if (target.exists) "overrided: " else "created: "
+    if (safeToCreateFile(target)) {
+      IO.write(target, contents)
+      logger.success(message + target)
+      true
+    }
+    false
+  }
 }
 
