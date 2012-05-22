@@ -55,13 +55,12 @@ object IOUtil {
     if (!dir.exists) {
       IO.createDirectory(dir)
       logger.success("created: " + dir)
-      true
     }
     val message = if (target.exists) "overrided: " else "created: "
     if (safeToCreateFile(target)) {
       IO.write(target, contents)
       logger.success(message + target)
-      true
+      return true
     }
     false
   }
