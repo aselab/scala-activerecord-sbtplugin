@@ -37,7 +37,7 @@ class ModelGenerator extends Generator {
       case (name: String, fields: Seq[_]) =>
         (name.capitalize, fields.map(_.toString))
     }
-    val target = sourceDir / "main" / "models" / (modelName + ".scala")
+    val target = sourceDir / "models" / (modelName + ".scala")
 
     val contents = engine.render("model/template.ssp", Map(
       ("packageName", "models"),
@@ -49,10 +49,5 @@ class ModelGenerator extends Generator {
   }
 
   val help = "[ModelName] [field[:type] field[:type]]"
-}
-
-class ScaffoldGenerator extends Generator {
-  def generate(info: GenerateInfo) {}
-  val help = ""
 }
 

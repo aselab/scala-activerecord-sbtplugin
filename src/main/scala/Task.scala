@@ -10,14 +10,14 @@ object Task {
   val copyTemplates: Initialize[sbt.InputTask[Unit]] = inputTask {
     (_, PluginKeys.templateDirectory, streams) map {
       case (args, templateDirectory, streams) =>
-        val url = getClass.getResource("/templates")
+        import IOUtil._
+        val urls = this.getClass.getClassLoader.getResources("templates")
         val logger = streams.log
-        IOUtil.copyJarResourses(url, templateDirectory, logger)
+        urls.foreach(IOUtil.copyJarResourses(_, templateDirectory, logger))
     }
   }
 
   Generator.register("model", new ModelGenerator, Parser.modelParser)
-  Generator.register("scaffold", new ScaffoldGenerator, Parser.scaffoldParser)
 
   val generate: Initialize[sbt.InputTask[Unit]] = InputTask(_ => Generator.allParser) {
     (_, scalaSource in Compile, streams, state, baseDirectory, templateDirectory) map {

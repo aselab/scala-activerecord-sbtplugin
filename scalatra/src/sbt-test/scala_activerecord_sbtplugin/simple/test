@@ -1,0 +1,8 @@
+> generate controller person index show
+$ exists src/main/scala/controllers/Person.scala
+> generate model person name:string:required age:int
+$ exists src/main/scala/models/Person.scala
+> copy-templates
+$ exists project/templates/controller/template.ssp
+$ exists project/templates/model/template.ssp
+
