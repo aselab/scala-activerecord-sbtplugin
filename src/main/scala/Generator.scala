@@ -34,8 +34,10 @@ class ModelGenerator extends Generator {
   def generate(info: GenerateInfo) {
     import info._
     val (modelName, fields) = parsed match {
-      case (name: String, fields: Seq[_]) =>
-        (name.capitalize, fields.map(_.toString))
+      case (name: String, fields: List[_]) =>
+        (name.capitalize, fields.map{
+          case f: List[_] => f.map(_.toString)
+        })
     }
     val target = sourceDir / "models" / (modelName + ".scala")
 

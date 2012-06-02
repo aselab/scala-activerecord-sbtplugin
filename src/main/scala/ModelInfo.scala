@@ -22,8 +22,8 @@ case class ModelInfo(
 }
 
 object ModelInfo {
-  def apply(fields: Seq[String]): Seq[ModelInfo] = {
-    fields.map(_.split(":").toList) map {
+  def apply(fields: List[List[String]]): Seq[ModelInfo] = {
+    fields map {
       case List(name, typeName) =>
         ModelInfo(name, getType(typeName))
       case List(name, typeName, option @ _*) =>

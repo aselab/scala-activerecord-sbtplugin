@@ -8,7 +8,7 @@ object Parser {
     Space ~> (token("model" <~ Space) ~ (token(NotSpace, "modelName") ~ fields))
 
   lazy val fields = (token(Space) ~> (fieldName ~ fieldType ~ options).map{
-    case (x ~ y ~ z) => (x +: y +: z).mkString(":")
+    case (x ~ y ~ z) => (x +: y +: z).toList
   }).* <~ SpaceClass.*
 
   lazy val Field = charClass(s => !s.isWhitespace && !(s == ':')).+.string

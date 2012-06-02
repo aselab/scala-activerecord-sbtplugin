@@ -6,7 +6,7 @@ object ModelInfoSpec extends Specification {
   "ModelInfo" should {
     "apply" in {
       "name:string:required age:int" in {
-        val fields = List("name:string:required", "age:int")
+        val fields = List(List("name", "string", "required"), List("age", "int"))
         ModelInfo(fields).map(_.toString) mustEqual Seq(
           "@Required name: String",
           "age: Int"
@@ -14,7 +14,7 @@ object ModelInfoSpec extends Specification {
       }
 
       "name:string:required age:int:option" in {
-        val fields = List("name:string:required", "age:int:option")
+        val fields = List(List("name", "string", "required"), List("age", "int", "option"))
         ModelInfo(fields).map(_.toString) mustEqual Seq(
           "@Required name: String",
           "age: Option[Int]"
@@ -23,9 +23,9 @@ object ModelInfoSpec extends Specification {
 
       "name:string:required:length(24) email:string:required:email age:int:option:range(min=0,max=150)" in {
         val fields = List(
-          "name:string:required:length(24)",
-          "email:string:required:email",
-          "age:int:option:range(min=0,max=150)"
+          List("name", "string", "required", "length(24)"),
+          List("email", "string", "required", "email"),
+          List("age", "int", "option", "range(min=0,max=150)")
         )
         ModelInfo(fields).map(_.toString) mustEqual Seq(
           "@Required @Length(24) name: String",

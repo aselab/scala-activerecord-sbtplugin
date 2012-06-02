@@ -9,7 +9,9 @@ class ControllerGenerator extends Generator {
     import info._
     val (controllerName, actions) = parsed match {
       case (name: String, acts: Seq[_]) =>
-        (name.capitalize, acts.map(_.toString))
+        (name.capitalize, acts.map {
+          case action: Seq[_] => action.map(_.toString)
+        })
     }
     val target = sourceDir / "controllers" / (controllerName + ".scala")
 
