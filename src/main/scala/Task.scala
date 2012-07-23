@@ -20,12 +20,11 @@ object Task {
   Generator.register("model", new ModelGenerator, Parser.modelParser)
 
   val generate: Initialize[sbt.InputTask[Unit]] = InputTask(_ => Generator.allParser) {
-    (_, scalaSource in Compile, streams, state, baseDirectory, templateDirectory) map {
+    (_, scalaSource in Compile, streams, scalaInstance, baseDirectory, templateDirectory) map {
       case ((generateType: String, parsed), sourceDir, streams, s, b, t) =>
         implicit val logger = streams.log
-        val libraryJar = s.configuration.provider.scalaProvider.libraryJar
         val baseTemplateDir = IOUtil.baseTemplateDir(b, t)
-        val templateEngine = new ScalateTemplateEngine(libraryJar, baseTemplateDir)
+        val templateEngine = new ScalateTemplateEngine(s.libraryJar, baseTemplateDir)
         val info = GenerateInfo(templateEngine, sourceDir, parsed)
         Generator.generators(generateType).generate(info)
     }
