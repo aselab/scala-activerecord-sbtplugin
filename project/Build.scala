@@ -10,8 +10,8 @@ object Build extends Build {
 
   lazy val mainDependencies = Seq(
     "org.fusesource.scalate" % "scalate-core" % "1.5.3",
-    "org.specs2" %% "specs2" % "1.10" % "test",
-    "org.slf4j" % "slf4j-nop" % "1.6.4"
+    "org.specs2" %% "specs2" % "1.12.1" % "test",
+    "org.slf4j" % "slf4j-nop" % "1.7.0"
   )
 
   lazy val defaultSettings =
