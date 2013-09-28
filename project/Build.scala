@@ -2,6 +2,8 @@ import sbt._
 import Keys._
 
 object Build extends Build {
+  val _version = "0.2.3-SNAPSHOT"
+
   lazy val main = Project("main", file("."), settings = mainSettings)
 
   lazy val scalatra = Project("scalatra", file("scalatra/"), settings = scalatraSettings) dependsOn(main)
@@ -9,9 +11,9 @@ object Build extends Build {
   lazy val play20 = Project("play20", file("play20/"), settings = play20Settings) dependsOn(main)
 
   lazy val mainDependencies = Seq(
-    "org.fusesource.scalate" % "scalate-core" % "1.5.3",
-    "org.specs2" %% "specs2" % "1.12.1" % "test",
-    "org.slf4j" % "slf4j-nop" % "1.7.0"
+    "org.fusesource.scalate" %% "scalate-core" % "1.6.1",
+    "org.specs2" %% "specs2" % "2.2.2" % "test",
+    "org.slf4j" % "slf4j-nop" % "1.7.5"
   )
 
   lazy val defaultSettings =
@@ -24,19 +26,19 @@ object Build extends Build {
       watchSources <++= (ScriptedPlugin.sbtTestDirectory).map{ dir => (dir ***).get }
     )
 
-  lazy val mainSettings: Seq[Project.Setting[_]] = defaultSettings ++ Seq(
+  lazy val mainSettings = defaultSettings ++ Seq(
     name := "scala-activerecord-sbtplugin",
-    version := "0.1-SNAPSHOT"
+    version := _version
   )
 
-  lazy val scalatraSettings: Seq[Project.Setting[_]] = defaultSettings ++ Seq(
+  lazy val scalatraSettings = defaultSettings ++ Seq(
     name := "scalatra-activerecord-sbtplugin",
-    version := "0.1-SNAPSHOT"
+    version := _version
   )
 
-  lazy val play20Settings: Seq[Project.Setting[_]] = defaultSettings ++ Seq(
+  lazy val play20Settings = defaultSettings ++ Seq(
     name := "play20-activerecord-sbtplugin",
-    version := "0.1-SNAPSHOT"
+    version := _version
   )
 }
 

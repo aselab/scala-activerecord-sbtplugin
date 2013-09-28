@@ -1,1 +1,1 @@
-addSbtPlugin("com.github.aselab" % "scalatra-activerecord-sbtplugin" % "0.1-SNAPSHOT")
+addSbtPlugin("com.github.aselab" % "scalatra-activerecord-sbtplugin" % "0.2.3-SNAPSHOT")

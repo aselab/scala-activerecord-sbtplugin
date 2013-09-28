@@ -5,7 +5,7 @@ Generator for Scala ActiveRecord
 add following line to `project/plugins.sbt`
 
 ```scala
-addSbtPlugin("com.github.aselab" % "scala-activerecord-sbtplugin" % "0.1-SNAPSHOT")
+addSbtPlugin("com.github.aselab" % "scala-activerecord-sbtplugin" % "0.2.3-SNAPSHOT")
 ```
 
 Inject plugin settings into project in build.sbt:
@@ -33,5 +33,6 @@ sbt-test
 ```sh
 $ bin/sbt
 > scripted
+> scalatra/scripted
 ```
 

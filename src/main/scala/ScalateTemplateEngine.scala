@@ -6,7 +6,7 @@ import org.fusesource.scalate._
 class ScalateTemplateEngine(libraryJar: File, baseTemplateDir: File) {
 
   lazy val engine = {
-    val engine = new TemplateEngine
+    val engine = new TemplateEngine(Nil, System.getProperty("scalate.mode", "production"))
     engine.combinedClassPath = true
     engine.classpath = libraryJar.getAbsolutePath
     engine
