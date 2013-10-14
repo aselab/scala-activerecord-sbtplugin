@@ -5,7 +5,7 @@ import com.github.aselab.activerecord.{Plugin => BasePlugin, _}
 object Plugin extends sbt.Plugin {
   val scalaActiverecordSettings = BasePlugin.activerecordSettings
 
-  Generator.register("controller", new ControllerGenerator, Parser.controllerParser)
-  Generator.register("routes", new RoutesGenerator, Parser.routesParser)
+  Generator.register(new ControllerGenerator)
+  Generator.register(new RoutesGenerator)
 }
 

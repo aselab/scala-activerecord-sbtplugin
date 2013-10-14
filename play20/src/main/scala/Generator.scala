@@ -3,9 +3,12 @@ package com.github.aselab.activerecord.play
 import com.github.aselab.activerecord._
 
 import sbt._
+import sbt.complete.DefaultParsers._
 import mojolly.inflector.InflectorImports._
 
 class ControllerGenerator extends Generator {
+  val name = "controller"
+
   def generate(info: GenerateInfo) {
     import info._
     val (controllerName, actions) = parsed match {
@@ -27,9 +30,21 @@ class ControllerGenerator extends Generator {
   }
 
   val help = "[controllerName] [action]*"
+
+  override val argumentsParser = (token(NotSpace, "controllerName") ~ actions)
+
+  lazy val actions = (token(Space) ~> (path ~ action).map{
+    case (x ~ y) => List(x, y)
+  }).* <~ SpaceClass.*
+
+  lazy val path = token(Field <~ token(':'), "path:action   e.g.) /index:get")
+  lazy val action = token(Field).examples("get", "post", "update", "delete")
+
 }
 
 class RoutesGenerator extends Generator {
+  val name = "routes"
+
   def generate(info: GenerateInfo) {
     import info._
     val modelName = parsed.asInstanceOf[String]
@@ -39,5 +54,7 @@ class RoutesGenerator extends Generator {
   }
 
   val help = "[ModelName]"
+
+  override val argumentsParser = token(NotSpace, "modelName")
 }
 

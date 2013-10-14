@@ -2,24 +2,11 @@ package com.github.aselab.activerecord.play
 
 import com.github.aselab.activerecord._
 import sbt.complete.DefaultParsers._
-import com.github.aselab.activerecord.Parser.Field
 import java.io._
 import scala.io.Source
 import mojolly.inflector.InflectorImports._
 
 object Parser {
-  val controllerParser =
-    Space ~> (token("controller" <~ Space) ~ (token(NotSpace, "controllerName") ~ actions))
-  val routesParser =
-    Space ~> (token("routes" <~ Space) ~ (token(NotSpace, "modelName")))
-
-  lazy val actions = (token(Space) ~> (path ~ action).map{
-    case (x ~ y) => List(x, y)
-  }).* <~ SpaceClass.*
-
-  lazy val path = token(Field <~ token(':'), "path:action   e.g.) /index:get")
-  lazy val action = token(Field).examples("get", "post", "update", "delete")
-
   class PlayRoute(routesFile: File) {
     val lines = Source.fromFile(routesFile).getLines.toSeq
 
