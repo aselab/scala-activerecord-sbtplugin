@@ -1,68 +1,78 @@
 package com.github.aselab.activerecord
 
 import sbt._
+import collection.JavaConversions.enumerationAsScalaIterator
 
 object IOUtil {
-
-  implicit def enumToIterator[A](e : java.util.Enumeration[A]) = new Iterator[A] {
-    def next = e.nextElement
-    def hasNext = e.hasMoreElements
-  }
-
-  def baseTemplateDir(baseDirectory: File, templateDir: String): File =
-    if (templateDir.startsWith("/"))
-      file(templateDir)
-    else
-      baseDirectory / templateDir
-
-  def copyJarResourses(url: java.net.URL, destination: String, logger: Logger) {
-    url.openConnection match {
-      case connection: java.net.JarURLConnection =>
-        val entryName = connection.getEntryName
-        val jarFile = connection.getJarFile
-        jarFile.entries.filter(_.getName.startsWith(entryName)).foreach { e =>
-          val fileName = e.getName.drop(entryName.size)
-          val target = file(destination) / fileName
-          val message = if (target.exists) "overrided: " else "created: "
-          if (!e.isDirectory) {
-            if (safeToCreateFile(target)) {
-              IO.transfer(jarFile.getInputStream(e), target)
-              logger.success(message + target)
-            }
+  def copyResources(loader: ClassLoader, name: String, destination: String, logger: Logger) {
+    val url = loader.getResource(name)
+    val dir = file(destination)
+    url.getProtocol match {
+      case "file" =>
+        val root = file(url.getPath)
+        root.***.get.foreach { src =>
+          val dst = dir / src.getPath.drop(root.getPath.size)
+          if (src.isDirectory) {
+            generateDir(dst, logger)
           } else {
-            IO.createDirectory(target)
-            if (!target.exists) logger.success("created: " + target)
+            generate(dst, logger) {
+              IO.copyFile(src, dst)
+            }
           }
         }
-      }
+      case "jar" =>
+        val conn = url.openConnection.asInstanceOf[java.net.JarURLConnection]
+        val entryName = conn.getEntryName
+        val jarFile = conn.getJarFile
+        jarFile.entries.filter(_.getName.startsWith(entryName)).foreach { e =>
+          val fileName = e.getName.drop(entryName.size)
+          val target = dir / fileName
+          if (e.isDirectory) {
+            generateDir(target, logger)
+          } else {
+            generate(target, logger) {
+              IO.transfer(jarFile.getInputStream(e), target)
+            }
+          }
+        }
     }
+  }
 
-  def safeToCreateFile(file: File): Boolean = {
-    def askUser: Boolean = {
-      val question = "The file %s exists, do you want to override it? (y/n): ".format(file.getPath)
+  def generate(file: File, logger: Logger)(f: => Unit) = {
+    def ask: Boolean = {
+      val question = "The file %s exists, do you want to overwrite it? (y/n): ".format(file.getPath)
       scala.Console.readLine(question).toLowerCase.headOption match {
         case Some('y') => true
         case Some('n') => false
-        case _ => askUser
+        case _ => ask
       }
     }
-    if (file.exists) askUser else true
+
+    val action = if (file.exists) {
+      if (ask) { f; "overwrite" } else { "skip" }
+    } else {
+      f; "create"
+    }
+    logger.info(action + ": " + file)
   }
 
-  def save(target: File, contents: String)(implicit logger: Logger): Boolean = {
-    if (target.isDirectory) return false
+  def generateDir(dir: File, logger: Logger) {
+    if (dir.isDirectory) {
+      logger.info("exist: " + dir)
+    } else {
+      IO.createDirectory(dir)
+      logger.info("create: " + dir)
+    }
+  }
+
+  def save(target: File, contents: String)(implicit logger: Logger) {
     val dir = target.getParentFile
     if (!dir.exists) {
-      IO.createDirectory(dir)
-      logger.success("created: " + dir)
+      generateDir(dir, logger)
     }
-    val message = if (target.exists) "overrided: " else "created: "
-    if (safeToCreateFile(target)) {
+    generate(target, logger) {
       IO.write(target, contents)
-      logger.success(message + target)
-      return true
     }
-    false
   }
 }
 

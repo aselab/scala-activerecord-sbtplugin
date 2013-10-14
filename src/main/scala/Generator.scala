@@ -10,8 +10,12 @@ case class GenerateInfo(
 )(implicit val logger: Logger)
 
 trait Generator {
+  def name: String
   def generate(info: GenerateInfo): Unit
   def help: String
+  def argumentsParser: complete.Parser[_] = spaceDelimited("args*")
+
+  lazy val Field = charClass(s => !s.isWhitespace && !(s == ':')).+.string
 }
 
 object Generator {
@@ -20,16 +24,18 @@ object Generator {
 
   lazy val allParser = parsers.reduceLeft {(a, b) => a | b}
 
-  def register(name: String, generator: Generator): Unit =
-    register(name, generator, Parser.default(name))
-
-  def register(name: String, generator: Generator, parser: complete.Parser[_]) {
+  def register(generator: Generator) {
+    import generator._
     generators += (name -> generator)
-    parsers += parser !!! "Usage: generate %s %s".format(name, generator.help)
+    val parser = Space ~> (token(name <~ Space) ~ argumentsParser)
+    parsers += parser !!! "Usage: generate %s %s".format(name, help)
   }
+
+  register(new ModelGenerator)
 }
 
 class ModelGenerator extends Generator {
+  val name = "model"
 
   def generate(info: GenerateInfo) {
     import info._
@@ -50,6 +56,15 @@ class ModelGenerator extends Generator {
     IOUtil.save(target, contents)
   }
 
-  val help = "[ModelName] [field[:type] field[:type]]"
+  val help = "ModelName fieldName1:type[:options] fieldName2:type[:options]"
+
+  override val argumentsParser = (token(NotSpace, "modelName") ~ fields)
+  lazy val fields = (token(Space) ~> (fieldName ~ fieldType ~ options).map{
+    case (x ~ y ~ z) => (x +: y +: z).toList
+  }).* <~ SpaceClass.*
+
+  lazy val fieldName = token(Field <~ token(':'), "fieldName")
+  lazy val fieldType = token(Field).examples(ModelInfo.allTypes: _*)
+  lazy val options = (token(':') ~> token(Field).examples(ModelInfo.allOptions: _*)).*
 }
 

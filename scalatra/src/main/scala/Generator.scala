@@ -3,8 +3,11 @@ package com.github.aselab.activerecord.scalatra
 import com.github.aselab.activerecord._
 
 import sbt._
+import sbt.complete.DefaultParsers._
 
 class ControllerGenerator extends Generator {
+  val name = "controller"
+
   def generate(info: GenerateInfo) {
     import info._
     val (controllerName, actions) = parsed match {
@@ -25,5 +28,14 @@ class ControllerGenerator extends Generator {
   }
 
   val help = "[controllerName] [action]*"
+
+  override val argumentsParser = (token(NotSpace, "controllerName") ~ actions)
+
+  lazy val actions = (token(Space) ~> (path ~ action).map{
+    case (x ~ y) => List(x, y)
+  }).* <~ SpaceClass.*
+
+  lazy val path = token(Field <~ token(':'), "path:action   e.g.) /index:get")
+  lazy val action = token(Field).examples("get", "post", "update", "delete")
 }
 
