@@ -1,0 +1,2 @@
+> generate controller group
+$ exists app/controllers/Groups.scala
