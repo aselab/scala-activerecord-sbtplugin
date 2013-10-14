@@ -4,9 +4,8 @@ import sbt._
 import collection.JavaConversions.enumerationAsScalaIterator
 
 object IOUtil {
-  def copyResources(loader: ClassLoader, name: String, destination: String, logger: Logger) {
+  def copyResources(loader: ClassLoader, name: String, dir: File, logger: Logger) {
     val url = loader.getResource(name)
-    val dir = file(destination)
     url.getProtocol match {
       case "file" =>
         val root = file(url.getPath)

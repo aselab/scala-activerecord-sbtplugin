@@ -9,7 +9,7 @@ object Plugin extends sbt.Plugin {
   val activerecordSettings = Seq(
     generate <<= Task.generate,
     copyTemplates <<= Task.copyTemplates,
-    templateDirectory := (baseDirectory.value / "templates").getPath
+    templateDirectory := baseDirectory.value / "templates"
   )
 }
 

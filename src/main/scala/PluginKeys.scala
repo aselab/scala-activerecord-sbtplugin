@@ -5,6 +5,6 @@ import sbt._
 object PluginKeys {
   lazy val generate = InputKey[Unit]("generate")
   lazy val copyTemplates = TaskKey[Unit]("copyTemplates")
-  lazy val templateDirectory = SettingKey[String]("templateDirectory")
+  lazy val templateDirectory = SettingKey[java.io.File]("templateDirectory")
 }
 

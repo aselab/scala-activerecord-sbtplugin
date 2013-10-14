@@ -19,16 +19,12 @@ object Task {
   def generate = Def.inputTask { Generator.allParser.parsed match {
     case (name: String, args) =>
       val sourceDir = (scalaSource in Compile).value
-      val templateDir = projectFile(templateDirectory.value,baseDirectory.value)
+      val templateDir = templateDirectory.value
       implicit val logger = streams.value.log
       val scalaJar = scalaInstance.value.libraryJar
       val templateEngine = new ScalateTemplateEngine(scalaJar, templateDir)
       val info = GenerateInfo(templateEngine, sourceDir, args)
       Generator.generators(name).generate(info)
   }}
-
-  def projectFile(path: String, base: File) = {
-    if (path.startsWith("/")) file(path) else base / path
-  }
 }
 

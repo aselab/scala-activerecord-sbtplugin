@@ -1,6 +1,6 @@
 activerecordSettings
 
-//com.github.aselab.activerecord.PluginKeys.templateDirectory := "/path/to/"
+//com.github.aselab.activerecord.PluginKeys.templateDirectory := baseDirectory.value / "other"
 
 libraryDependencies ++= Seq(
   "com.github.aselab" %% "scala-activerecord" % "0.2.3",
