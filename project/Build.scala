@@ -13,6 +13,7 @@ object Build extends Build {
   lazy val mainDependencies = Seq(
     "org.fusesource.scalate" %% "scalate-core" % "1.6.1",
     "org.specs2" %% "specs2" % "2.2.2" % "test",
+    "io.backchat.inflector" %% "scala-inflector" % "1.3.5",
     "org.slf4j" % "slf4j-nop" % "1.7.5"
   )
 

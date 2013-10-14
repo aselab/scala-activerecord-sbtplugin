@@ -5,6 +5,7 @@
 package ${packageName}
 
 import com.github.aselab.activerecord._
+import com.github.aselab.activerecord.dsl._
 #if (imports.nonEmpty)
 ${imports.map("import %s".format(_)).mkString("\n")}
 #end
